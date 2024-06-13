@@ -1,0 +1,51 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block css %}
+    <style>
+        .comment-form {
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}
+    Holiday Housings List
+{% endblock %}
+
+{% block content %}
+    <h2>Holiday Housings</h2>
+    {% if all_housings %}
+        <ul>
+            {% for housing in all_housings %}
+                <li>
+                    <p>Title: {{ housing.title }}</p>
+                    <p>Type: {{ housing.get_type_display }}</p>
+                    <p>Location: {{ housing.get_location_display }}</p>
+                    <p>Rooms: {{ housing.rooms }}</p>
+                    <p>Specials: {{ housing.specials }}</p>
+                    <p>Cost: {{ housing.get_costs_display }}</p>
+
+                    <p>
+
+                    </p>
+                    <form class="comment-form" method="post" action="{% url 'housing-detail' pk=housing.pk %}">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <button type="submit">show and add comments</button>
+                    </form>
+                    <hr>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No housings yet</p>
+    {% endif %}
+
+    <p>Add a new holiday housing</p>
+    <form method="get" action="{% url 'housing-create' %}">
+        <button type="submit">Add new housing</button>
+    </form>
+
+
+{% endblock %}

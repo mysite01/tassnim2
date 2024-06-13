@@ -1,0 +1,57 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block css %}
+    .vote-button.active {
+        color: green;
+    }
+{% endblock %}
+
+{% block title %}
+    Housing details
+{% endblock %}
+
+{% block content %}
+    <h2>Housing Detail</h2>
+    <ul>
+        <li><strong>Title:</strong> {{ single_housing.title }}</li>
+        <li><strong>Housing Type:</strong> {{ single_housing.get_type_display }}</li>
+        <li><strong>Cost Class:</strong> {{ single_housing.get_costs_display }}</li>
+        <li><strong>Location Type:</strong> {{ single_housing.get_location_display }}</li>
+        <li><strong>Number of Rooms:</strong> {{ single_housing.rooms }}</li>
+        <li><strong>Special Feature:</strong> {{ single_housing.specials }}</li>
+    </ul>
+    <a href="{% url 'housing-list' %}">Back to all housings</a>
+
+    <h2>Add a comment</h2>
+    <form method="post" action="{% url 'housing-detail' pk=single_housing.pk %}">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">Add comment</button>
+    </form>
+
+    <h2>Comments</h2>
+    {% if comments_on_the_housing %}
+        <ul>
+            {% for comment in comments_on_the_housing %}
+                <li>
+                    {{ comment.user }}: {{ comment.text }}: ({{ comment.timestamp }})
+                    <form method="post" action="{% url 'comment-vote' comment.pk 'U' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="vote-button">Upvote</button>
+                </form>
+                <span class="upvote-count">{{ comment.upvotes_count }}</span>
+
+                <form method="post" action="{% url 'comment-vote' comment.pk 'D' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="vote-button">Downvote</button>
+                </form>
+                <span class="downvote-count">{{ comment.downvotes_count }}</span>
+
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments yet.</p>
+    {% endif %}
+{% endblock %}

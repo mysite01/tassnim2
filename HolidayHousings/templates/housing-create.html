@@ -1,0 +1,47 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block title %}
+    Add holiday housing
+{% endblock %}
+
+{% block logged_in_content %}
+    <h2>Add a new holiday housing</h2>
+    <form method="post" action="{% url 'housing-create' %}">
+
+        {% csrf_token %}
+        <div>
+            {{ form.title.label }}: {{ form.title }}
+        </div>
+        <div>
+            {{ form.type.label }}: {{ form.type }}
+        </div>
+        <div>
+            {{ form.location.label }}: {{ form.location }}
+        </div>
+        <div>
+            {{ form.costs.label }}: {{ form.costs }}
+        </div>
+        <div>
+            {{ form.rooms.label }}:{{ form.rooms }}
+        </div>
+        <div>
+            {{ form.specials.label }}:{{ form.specials }}
+        </div>
+
+        <h3>Add an comment</h3>
+        <div>
+            {{ comment_form.text.label }}: {{ comment_form.text }}
+        </div>
+
+
+        <div>
+            <button type="submit">Add housing and comment</button>
+        </div>
+    </form>
+{% endblock %}
+

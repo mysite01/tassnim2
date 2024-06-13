@@ -1,0 +1,26 @@
+{% extends 'home.html' %}
+
+{% block title %}Users list{% endblock %}
+
+{% block content %}
+
+    <h2>Users list</h2>
+
+    <ul>
+        {% for myuser in all_myusers %}
+
+            <div>
+                <p>{{ myuser.username }} {{ myuser.first_name }} {{ myuser.last_name }} ({{ myuser.date_of_birth }})</p>
+                
+                {% if myuser.profile_image %}
+                    <img src="{{ myuser.profile_image.url }}" height="75" width="75"><br>
+                {% endif %}
+            
+                {% if myuser.some_file %}
+                    <a href="{{ myuser.some_file.url }}">Some uploaded file</a><br>
+                {% endif %}
+            </div>
+
+        {% endfor %}
+    </ul>
+{% endblock %}

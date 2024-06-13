@@ -1,0 +1,9 @@
+<div id="headline">
+<h1>{{ blog_title }}</h1>
+</div>
+<div id="content">
+{% block content %}{% endblock %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+</div>

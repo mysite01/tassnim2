@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home_style.css' %}">
+{% endblock %}
+
+{% block title %}Home Title{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+
+        {% block logged_in_content %}
+            <h2>Hi {{ user.username }}!</h2>
+            {% if myuser_has_birthday_today %}
+                <p>🎂Happy Birthday!!🎂</p>
+            {% endif %}
+            <p><a href="{% url 'housing-list' %}">Show me the holiday housings</a></p>
+            <p><a href="{% url 'myuser-list' %}">Show me the users</a></p>
+            <a href="{% url 'logout' %}">Logout</a>
+        {% endblock %}
+
+    {% else %}
+
+        {% block not_logged_in_content %}
+            <p>You are not logged in</p>
+            <a href="{% url 'login' %}">Login</a>
+            <br>
+            <a href="{% url 'signup' %}">Signup</a>
+        {% endblock %}
+
+    {% endif %}
+
+{% endblock %}
+

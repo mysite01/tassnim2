@@ -1,0 +1,19 @@
+<form method="post" action="{% url 'comment-vote' comment.pk 'U' %}">
+    {% csrf_token %}
+    <button type="submit">Upvote</button>
+</form>
+{% if comment.get_upvotes_count == 1 %}
+    <span class="upvote-count">1</span>
+{% else %}
+    <span class="upvote-count">{{ comment.upvotes_count }}</span>
+{% endif %}
+
+<form method="post" action="{% url 'comment-vote' comment.pk 'D' %}">
+    {% csrf_token %}
+    <button type="submit">Downvote</button>
+</form>
+{% if comment.get_downvotes_count == 1 %}
+    <span class="downvote-count">1</span>
+{% else %}
+    <span class="downvote-count">{{ comment.downvotes_count }}</span>
+{% endif %}
