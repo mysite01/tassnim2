@@ -17,6 +17,27 @@ from django.shortcuts import render, redirect
 from .models import HolidayHousing, Comment
 from .forms import HolidayHousingForm, CommentForm
 
+from django.urls import path
+from . import views
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .models import HolidayHousing
+from .forms import HolidayHousingForm, CommentForm, EditCommentForm
+from .models import Comment, Vote
+from .forms import HolidayHousingForm, CommentForm, SearchForm
+from django.db.models import Q
+
+from django.shortcuts import render, redirect
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
+from .models import HolidayHousing, Comment
+from .forms import HolidayHousingForm, CommentForm
+# from UserAdmin.models import get_myuser_from_user
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
+from .models import HolidayHousing, Comment
+from .forms import HolidayHousingForm, CommentForm
+
 
 def housing_list(request):
     all_housings = HolidayHousing.objects.all()
@@ -144,3 +165,43 @@ class HousingCreateView(CreateView):
         form.instance.myuser = self.request.user
 
         return super().form_valid(form)
+
+
+def housing_search(request):
+    if request.method == 'POST':
+        search_string_title = request.POST.get('title', '')
+        search_string_rooms = request.POST.get('rooms', '')
+        search_string_specials = request.POST.get('specials', '')
+
+        print("Title:", search_string_title)
+        print("Rooms:", search_string_rooms)
+        print("Specials:", search_string_specials)
+
+        # Baue die Abfrage dynamisch auf
+        query = Q(title__icontains=search_string_title) & Q(specials__icontains=search_string_specials)
+
+        # Füge die Bedingung für die Zimmeranzahl nur hinzu, wenn ein Wert angegeben wurde
+        if search_string_rooms:
+            searched_rooms = int(search_string_rooms)
+            query &= Q(rooms=searched_rooms)
+
+        housings_found = HolidayHousing.objects.filter(query)
+
+        print("Found housings:", housings_found)
+
+        form_in_function_based_view = SearchForm()
+
+        context = {
+            'show_search_results': True,
+            'form': form_in_function_based_view,
+            'housings_found': housings_found
+        }
+    else:  # GET
+        form_in_function_based_view = SearchForm()
+
+        context = {
+            'show_search_results': False,
+            'form': form_in_function_based_view,
+        }
+
+    return render(request, 'housing-search.html', context)

@@ -34,3 +34,13 @@ class EditCommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
+
+
+class SearchForm(forms.ModelForm):
+    title = forms.CharField(required=False)
+    rooms = forms.IntegerField(required=False)
+    specials = forms.CharField(required=False)
+
+    class Meta:
+        model = HolidayHousing
+        fields = ['title', 'rooms', 'specials']

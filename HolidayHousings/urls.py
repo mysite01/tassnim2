@@ -8,5 +8,6 @@ urlpatterns = [
     path('delete/<int:pk>/', views.housing_delete, name='housing-delete'),
     path('comment/edit/<int:pk>/', views.edit_comment, name='edit-comment'),
     path('vote/<int:pk>/<str:vote_type>/', views.vote, name='vote'),
-    path('comment-vote/<int:comment_id>/<str:vote_type>/', views.comment_vote, name='comment-vote')
+    path('comment-vote/<int:comment_id>/<str:vote_type>/', views.comment_vote, name='comment-vote'),
+    path('search/', views.housing_search, name='housing-search')
 ]

@@ -1,0 +1,41 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/housings_styles.css' %}">
+{% endblock %}
+
+{% block title %}Search Holiday Housing{% endblock %}
+
+{% block logged_in_content %}
+
+    <h2>Search Holiday Housing</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Search</button>
+    </form>
+    <br>
+    <br>
+
+    {% if show_search_results %}
+        <b>Housings found:</b><br>
+        {% if housings_found %}
+            <ul>
+                {% for housing in housings_found %}
+                    <li>
+                        <p><b>{{ housing }}</b></p>
+                        <a href="{% url 'housing-detail' housing.id %}">
+                            Show housing
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Keine Häuser gefunden</p>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
+
