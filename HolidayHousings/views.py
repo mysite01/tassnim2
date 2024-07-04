@@ -1,27 +1,22 @@
 from django.urls import path
-from . import views
+# from pyexpat.errors import messages
+from django.contrib import messages
+from OnlineShop import settings
+from . import views, models, forms
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Order, OrderItem
+from .models import HolidayHousing
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import HolidayHousing
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render, redirect
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import HolidayHousing
-from .forms import HolidayHousingForm, CommentForm, EditCommentForm
-from .models import Comment, Vote
+from django.shortcuts import render, redirect
 
-from django.shortcuts import render, redirect
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from .models import HolidayHousing, Comment
-from .forms import HolidayHousingForm, CommentForm
-# from UserAdmin.models import get_myuser_from_user
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect
-from .models import HolidayHousing, Comment
-from .forms import HolidayHousingForm, CommentForm
-
-from django.urls import path
-from . import views
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from .models import HolidayHousing
 from .forms import HolidayHousingForm, CommentForm, EditCommentForm
 from .models import Comment, Vote
 from .forms import HolidayHousingForm, CommentForm, SearchForm
@@ -37,6 +32,13 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from .models import HolidayHousing, Comment
 from .forms import HolidayHousingForm, CommentForm
+
+
+def clean_max_quantity(self):
+    max_quantity = self.cleaned_data.get('max_quantity')
+    if max_quantity < 1:
+        raise forms.ValidationError("Die maximale Stückanzahl muss mindestens 1 sein.")
+    return max_quantity
 
 
 def housing_list(request):
@@ -85,12 +87,20 @@ def housing_detail(request, pk):
 
 def housing_create(request):
     if request.method == 'POST':
-        form = HolidayHousingForm(request.POST)
+        form = HolidayHousingForm(request.POST, request.FILES)  # request.FILES hinzugefügt
+        # form = HolidayHousingForm(request.POST)
         comment_form = CommentForm(request.POST)
         if form.is_valid():
             housing = form.save(commit=False)
             form.instance.myuser = request.user
             form.save()
+
+            product = Product.objects.create(
+                name=housing.title,
+                description=housing.specials,
+                price=housing.price,
+                image=None
+            )
 
             comment = comment_form.save(commit=False)
             comment.myuser = request.user
@@ -205,3 +215,77 @@ def housing_search(request):
         }
 
     return render(request, 'housing-search.html', context)
+
+
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
+
+
+# def checkout(request):
+#  cart_items = CartItem.objects.filter(user=request.user)
+# total_price = sum(item.product.price * item.quantity for item in cart_items)
+# Fügen Sie hier Ihre Checkout-Logik hinzu
+# return render(request, 'checkout.html', {'cart_items': cart_items, 'total_price': total_price})
+
+
+def add_to_cart(request, housing_id):
+    housing = get_object_or_404(HolidayHousing, pk=housing_id)
+    quantity = int(request.POST.get('quantity', 1))
+
+    # Beispiel: Hier wird angenommen, dass ein Warenkorb in der Sitzung gespeichert wird
+    cart = request.session.get('cart', {})
+    cart_item = cart.get(housing_id, {'quantity': 0})
+    cart_item['quantity'] += quantity
+    cart[housing_id] = cart_item
+    request.session['cart'] = cart
+
+    return redirect('view_cart')
+
+
+def view_cart(request):
+    cart = request.session.get('cart', {})
+    cart_items = []
+    total_price = 0
+
+    for housing_id, item_data in cart.items():
+        housing = get_object_or_404(HolidayHousing, pk=housing_id)
+        quantity = item_data['quantity']
+        item_total_price = housing.price * quantity
+        total_price += item_total_price
+        cart_items.append({
+            'housing': housing,
+            'quantity': quantity,
+            'item_total_price': item_total_price,
+        })
+
+    return render(request, 'view_cart.html', {'cart_items': cart_items, 'total_price': total_price})
+
+
+@login_required
+def checkout(request):
+    cart = request.session.get('cart', {})
+    cart_items = []
+
+    # Sammle die Artikel aus dem Warenkorb
+    for housing_id, item_data in cart.items():
+        housing = get_object_or_404(HolidayHousing, pk=housing_id)
+        quantity = item_data['quantity']
+        cart_items.append({
+            'housing': housing,
+            'quantity': quantity,
+            'item_total_price': housing.price * quantity,
+        })
+
+    # Berechne den Gesamtpreis
+    total_price = sum(item['item_total_price'] for item in cart_items)
+
+    if request.method == 'POST':
+        # Beispiel: Hier könnte die Bezahllogik oder Bestellverarbeitung stattfinden
+        # Für dieses Beispiel wird der Warenkorb nach dem Checkout geleert
+        request.session['cart'] = {}
+
+        # Erstellen einer Bestellungsbestätigung oder Weiterleitung zu einer Bestätigungsseite
+        return redirect('order_confirmation')  # Anpassen zu Ihrer Bestätigungsseite
+
+    return render(request, 'checkout.html', {'cart_items': cart_items, 'total_price': total_price})

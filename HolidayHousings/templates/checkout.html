@@ -1,0 +1,52 @@
+{% extends 'home.html' %}
+
+{% block content %}
+    <div class="container">
+        <h2>Checkout</h2>
+        <p>Hier können Sie Ihre Bestellung abschließen.</p>
+
+        <!-- Warenkorbübersicht -->
+        <h3>Warenkorb</h3>
+        <ul>
+            {% for item in cart_items %}
+                <li>{{ item.quantity }} x {{ item.housing.title }} - {{ item.item_total_price }} $</li>
+            {% endfor %}
+        </ul>
+        <p>Gesamtpreis: {{ total_price }} $</p>
+
+        <!-- Formular für Lieferinformationen und Zahlung -->
+        <h3>Lieferinformationen</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Adresse</label>
+                <textarea id="address" name="address" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="phone">Telefonnummer</label>
+                <input type="text" id="phone" name="phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="payment_method">Zahlungsmethode</label>
+                <select id="payment_method" name="payment_method" class="form-control" required>
+                    <option value="credit_card">Kreditkarte</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bank_transfer">Überweisung</option>
+                    <!-- Weitere Optionen hinzufügen -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Bestellung abschließen</button>
+        </form>
+
+        <!-- Zurück-Button zur Liste der Ferienunterkünfte -->
+        <a href="{% url 'housing-list' %}" class="btn btn-secondary mt-3">Zurück zur Ferienunterkünfte-Liste</a>
+    </div>
+{% endblock %}

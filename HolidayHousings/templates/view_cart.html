@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h2>Ihr Warenkorb</h2>
+        {% if cart_items %}
+            <div class="row">
+                <div class="col-md-8">
+                    <ul class="list-group mb-3">
+                        {% for item in cart_items %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5>{{ item.housing.title }}</h5>
+                                        <p>Quantity: {{ item.quantity }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-right">
+
+                                            <p>Price: {{ item.housing.price }} $</p>
+                                            <p>Total: {{ item.item_total_price }} $</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Summary</h5>
+                            <p class="card-text">Total Price: {{ total_price }} $</p>
+                            <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">Ihr Warenkorb ist leer.</p>
+        {% endif %}
+    </div>
+{% endblock %}

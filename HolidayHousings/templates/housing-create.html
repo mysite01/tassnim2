@@ -11,7 +11,7 @@
 
 {% block logged_in_content %}
     <h2>Add a new holiday housing</h2>
-    <form method="post" action="{% url 'housing-create' %}">
+    <form method="post" action="{% url 'housing-create' %}" enctype="multipart/form-data">
 
         {% csrf_token %}
         <div>
@@ -32,7 +32,16 @@
         <div>
             {{ form.specials.label }}:{{ form.specials }}
         </div>
+<div>
+                {{ form.price.label }}:{{ form.price }}
+            </div>
 
+         <div>
+            {{ form.max_quantity.label }}:{{ form.max_quantity }}
+        </div>
+         <div class="form-group">
+            {{ form.image.label }}:{{ form.image }}
+        </div>
         <h3>Add an comment</h3>
         <div>
             {{ comment_form.text.label }}: {{ comment_form.text }}

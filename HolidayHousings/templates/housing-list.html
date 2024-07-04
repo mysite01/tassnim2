@@ -1,51 +1,71 @@
+<!-- templates/housing_list.html -->
 {% extends 'home.html' %}
-{% load static %}
+
+<!-- templates/housing_list.html -->
+
 
 {% block css %}
     <style>
-        .comment-form {
-            margin-bottom: 20px;
+        .housing-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+        .cart {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+            z-index: 1000;
+        }
+        .cart ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .cart-item {
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
         }
     </style>
 {% endblock %}
 
-{% block title %}
-    Holiday Housings List
-{% endblock %}
-
 {% block content %}
-    <h2>Holiday Housings</h2>
-    {% if all_housings %}
-        <ul>
-            {% for housing in all_housings %}
-                <li>
-                    <p>Title: {{ housing.title }}</p>
-                    <p>Type: {{ housing.get_type_display }}</p>
-                    <p>Location: {{ housing.get_location_display }}</p>
-                    <p>Rooms: {{ housing.rooms }}</p>
-                    <p>Specials: {{ housing.specials }}</p>
-                    <p>Cost: {{ housing.get_costs_display }}</p>
+    <div class="container">
+        <h2>Holiday Housings</h2>
+        {% if all_housings %}
+            <ul>
+                {% for housing in all_housings %}
+                    <li class="housing-item">
+                        <p>Title: {{ housing.title }}</p>
+                        <p>Type: {{ housing.get_type_display }}</p>
+                        <p>Location: {{ housing.get_location_display }}</p>
+                        <p>Rooms: {{ housing.rooms }}</p>
+                        <p>Specials: {{ housing.specials }}</p>
+                        <p>Price: {{ housing.price }} $</p>
+                        <p>Cost: {{ housing.get_costs_display }}</p>
+                        <p>Maximal Quantity: {{ housing.max_quantity }}</p>
+{% if housing.image %}
+    <img src="{{ housing.image.url }}" alt="{{ housing.title }}" style="max-width: 100px; height: auto;">
+{% endif %}
+                    <p></p>
+                        <form method="post" action="{% url 'add_to_cart' housing.id %}">
+                            {% csrf_token %}
+                            <label for="quantity">Menge:</label>
+                            <input type="number" id="quantity" name="quantity" min="1" max="{{ housing.max_quantity }}" required>
+                            <button type="submit">In den Warenkorb</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No housings yet</p>
+        {% endif %}
 
-                    <p>
-
-                    </p>
-                    <form class="comment-form" method="post" action="{% url 'housing-detail' pk=housing.pk %}">
-                        {% csrf_token %}
-                        {{ comment_form.as_p }}
-                        <button type="submit">show and add comments</button>
-                    </form>
-                    <hr>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No housings yet</p>
-    {% endif %}
-
-    <p>Add a new holiday housing</p>
-    <form method="get" action="{% url 'housing-create' %}">
-        <button type="submit">Add new housing</button>
-    </form>
-
-
+        <!-- Error message section -->
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+    </div>
 {% endblock %}
