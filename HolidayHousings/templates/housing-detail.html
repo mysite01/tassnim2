@@ -5,6 +5,18 @@
     .vote-button.active {
         color: green;
     }
+
+    .vote-button.active {
+        color: green;
+    }
+
+    .upvote-count, .downvote-count {
+        margin-left: 5px;
+    }
+
+    .comment-form, .comments {
+        margin-top: 20px;
+    }
 {% endblock %}
 
 {% block title %}
@@ -23,35 +35,52 @@
     </ul>
     <a href="{% url 'housing-list' %}">Back to all housings</a>
 
-    <h2>Add a comment</h2>
-    <form method="post" action="{% url 'housing-detail' pk=single_housing.pk %}">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit">Add comment</button>
-    </form>
+    <div class="comment-form">
+        <h2>Add a comment</h2>
+        <form method="post" action="{% url 'housing-detail' pk=single_housing.pk %}">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Add comment</button>
+        </form>
+    </div>
 
-    <h2>Comments</h2>
-    {% if comments_on_the_housing %}
-        <ul>
-            {% for comment in comments_on_the_housing %}
-                <li>
-                    {{ comment.user }}: {{ comment.text }}: ({{ comment.timestamp }})
-                    <form method="post" action="{% url 'comment-vote' comment.pk 'U' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="vote-button">Upvote</button>
-                </form>
-                <span class="upvote-count">{{ comment.upvotes_count }}</span>
+    <div class="comments">
+        <h2>Comments</h2>
+        {% if comments_on_the_housing %}
+            <ul>
+                {% for comment in comments_on_the_housing %}
+                    <li>
+                        {{ comment.myuser }}: {{ comment.text }} ({{ comment.timestamp }}) - {{ comment.star_rating }} Stars
+                        <div class="comment-actions">
+                            {% if request.user == comment.myuser %}
+                                <a href="{% url 'edit-comment' pk=comment.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                                <form method="post" action="{% url 'delete-comment' pk=comment.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            {% endif %}
+                        <form method="post" action="{% url 'comment-vote' comment.pk 'U' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="vote-button">Helpful</button>
+                        </form>
+                        <span class="upvote-count">{{ comment.get_helpful_count }}</span>
 
-                <form method="post" action="{% url 'comment-vote' comment.pk 'D' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="vote-button">Downvote</button>
-                </form>
-                <span class="downvote-count">{{ comment.downvotes_count }}</span>
+                        <form method="post" action="{% url 'comment-vote' comment.pk 'D' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="vote-button">Not Helpful</button>
+                        </form>
+                        <span class="downvote-count">{{ comment.get_not_helpful_count }}</span>
 
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No comments yet.</p>
-    {% endif %}
+                        <form method="post" action="{% url 'report-comment' comment.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="vote-button">Report</button>
+                        </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No comments yet.</p>
+        {% endif %}
+    </div>
 {% endblock %}

@@ -56,7 +56,8 @@ class HolidayHousing(models.Model):
 
     max_quantity = models.PositiveIntegerField(default=1, help_text='Maximale Stückanzahl pro Bestellung')
     specials = models.CharField(max_length=50)
-    # image = models.ImageField(upload_to='housing_images/', null=True, blank=True)  # ImageField hinzugefügt
+    image = models.ImageField(upload_to='holiday_housing_images/', blank=True, null=True)
+    pdf_file = models.FileField(upload_to='holiday_housing_pdfs/', blank=True, null=True)
     myuser = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -145,11 +146,22 @@ class Comment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     myuser = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     holiday_housing = models.ForeignKey(HolidayHousing, on_delete=models.CASCADE)
+    star_rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=1)
+
+    def get_helpful_count(self):
+        return CommentVote.objects.filter(comment=self, vote_type='U').count()
+
+    def get_not_helpful_count(self):
+        return CommentVote.objects.filter(comment=self, vote_type='D').count()
 
     class Meta:
-        ordering = ['timestamp']
-        verbose_name = 'Comment'
-        verbose_name_plural = 'Comments'
+        unique_together = ('myuser', 'holiday_housing')  # Ensure one comment per user per housing
+
+        def __str__(self):
+            return f'{self.get_comment_excerpt()} ({self.myuser.username})'
+
+        def __repr__(self):
+            return f'{self.get_comment_excerpt()} ({self.myuser.username} / {str(self.timestamp)})'
 
     def get_comment_excerpt(self):
         if len(self.text) > 50:
@@ -198,3 +210,27 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'{self.quantity} x {self.housing.title} in Order #{self.order.id}'
+
+class CommentVote(models.Model):
+    VOTE_TYPES = [('U', 'Helpful'), ('D', 'Not Helpful')]
+    vote_type = models.CharField(max_length=1, choices=VOTE_TYPES)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.vote_type} on {self.comment} by {self.user.username}'
+
+    def __repr__(self):
+        return f'{self.vote_type} on {self.comment} by {self.user.username}'
+
+class Report(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    reason = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Report on {self.comment} by {self.user.username}'
+
+    def __repr__(self):
+        return f'Report on {self.comment} by {self.user.username} ({self.timestamp})'

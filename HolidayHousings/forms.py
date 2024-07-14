@@ -1,6 +1,5 @@
 from django import forms
-from .models import HolidayHousing, Comment
-
+from .models import HolidayHousing, Comment, Report
 from django import forms
 from .models import Product
 
@@ -9,7 +8,12 @@ class HolidayHousingForm(forms.ModelForm):
     class Meta:
         model = HolidayHousing
 
-        fields = ['title', 'type', 'costs', 'location', 'rooms', 'specials', 'price', 'image', 'max_quantity']
+        fields = ['title',
+                  'type',
+                  'costs',
+                  'location',
+                  'rooms',
+                  'specials', 'price', 'image', 'max_quantity', 'pdf_file']
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -30,10 +34,14 @@ class HolidayHousingForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+    star_rating = forms.ChoiceField(
+        choices=[(i, i) for i in range(1, 6)],
+        widget=forms.RadioSelect
+    )
     class Meta:
         model = Comment
 
-        fields = ['text']
+        fields = ['text', 'star_rating']
 
         widgets = {
             'myuser': forms.HiddenInput(),
@@ -45,8 +53,15 @@ class CommentForm(forms.ModelForm):
 class EditCommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text']
+        fields = ['text', 'star_rating']
+        widgets = {
+            'star_rating': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
+        }
 
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['reason']
 
 class SearchForm(forms.ModelForm):
     title = forms.CharField(required=False)

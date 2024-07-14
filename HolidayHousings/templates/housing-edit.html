@@ -1,0 +1,18 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block css %}
+{% endblock %}
+
+{% block title %}
+    Edit holiday housing
+{% endblock %}
+
+{% block logged_in_content %}
+    <h2>Edit holiday housing</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save changes</button>
+    </form>
+{% endblock %}

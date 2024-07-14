@@ -30,8 +30,8 @@ from .forms import HolidayHousingForm, CommentForm
 # from UserAdmin.models import get_myuser_from_user
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
-from .models import HolidayHousing, Comment
-from .forms import HolidayHousingForm, CommentForm
+from .models import HolidayHousing, Comment, Vote, CommentVote, Report
+from .forms import HolidayHousingForm, CommentForm, ReportForm, EditCommentForm
 
 
 def clean_max_quantity(self):
@@ -44,7 +44,14 @@ def clean_max_quantity(self):
 def housing_list(request):
     all_housings = HolidayHousing.objects.all()
     comments = Comment.objects.all()
-    return render(request, 'housing-list.html', {'all_housings': all_housings, 'comments': comments})
+    myuser = request.user
+    context = {
+        'all_housings': all_housings,
+        'comments': comments,
+        'has_add_permission': not myuser.is_anonymous and myuser.has_add_permission(),
+        'has_edit_permission': not myuser.is_anonymous and myuser.has_edit_permission()
+    }
+    return render(request, 'housing-list.html', context)
 
 
 def vote(request, pk: str, up_or_down: str):
@@ -66,7 +73,13 @@ def housing_detail(request, pk):
         comment_form.instance.myuser = current_myuser
         comment_form.instance.holiday_housing = current_single_housing
         if comment_form.is_valid():
-            comment_form.save()
+            # Check if the user has already commented on this housing
+            existing_comment = Comment.objects.filter(myuser=current_myuser,
+                                                      holiday_housing=current_single_housing).first()
+            if existing_comment:
+                messages.error(request, 'You have already commented on this housing.')
+            else:
+                comment_form.save()
         else:
             print(comment_form.errors)
     else:
@@ -121,43 +134,82 @@ def housing_delete(request, pk):
         return redirect('housing-list')
     return render(request, 'housing-delete.html', {'housing': housing})
 
+def housing_edit(request, pk):
+    housing = get_object_or_404(HolidayHousing, pk=pk)
+    print(housing)
+    if request.method == 'POST':
+        print("Handling POST request")
+        form = HolidayHousingForm(request.POST, instance=housing)
+        if form.is_valid():
+            form.save()
+            return redirect('housing-detail', pk=housing.pk)
+        else:
+            print(f"Form errors: {form.errors}")
+    else:
+        print("Handling GET request")
+        form = HolidayHousingForm(instance=housing)
+        print(f"Form with instance: {form}")
+    return render(request, 'housing-edit.html', {'form': form, 'housing': housing})
+
 
 def edit_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
-    if request.user != comment.user:
-        return redirect('housing-detail', pk=comment.housing.pk)
+
+    # Check if the current user is the owner of the comment
+    if request.user != comment.myuser:
+        return redirect('housing-detail', pk=comment.holiday_housing.pk)
 
     if request.method == 'POST':
         form = EditCommentForm(request.POST, instance=comment)
         if form.is_valid():
             form.save()
-            return redirect('housing-detail', pk=comment.housing.pk)
+            return redirect('housing-detail', pk=comment.holiday_housing.pk)
     else:
         form = EditCommentForm(instance=comment)
 
-    return render(request, 'edit_comment.html', {'form': form})
+    return render(request, 'edit_comment.html', {'form': form, 'comment': comment})
 
 
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
-    housing_pk = comment.housing.pk
-    comment.delete()
-    return redirect('housing-detail', pk=housing_pk)
+    # Ensure only the owner of the comment can delete it
+    if request.user == comment.myuser:
+        housing_pk = comment.holiday_housing.pk
+        comment.delete()
+        return redirect('housing-detail', pk=housing_pk)
+    else:
+        return redirect('housing-detail', pk=comment.holiday_housing.pk)
 
 
+@login_required
 def comment_vote(request, comment_id, vote_type):
     user = request.user
     comment = get_object_or_404(Comment, id=comment_id)
 
-    # Überprüfen, ob der Benutzer bereits für diesen Kommentar abgestimmt hat
-    existing_vote = Vote.objects.filter(user=user, holiday_housing=comment.holiday_housing).first()
-    if existing_vote:
-        existing_vote.delete()
+    # Remove any existing vote by the user for this comment
+    CommentVote.objects.filter(user=user, comment=comment).delete()
 
-    # Neue Stimme hinzufügen
-    Vote.objects.create(user=user, holiday_housing=comment.holiday_housing, up_or_down=vote_type)
-
+    # Add the new vote
+    CommentVote.objects.create(user=user, comment=comment, vote_type=vote_type)
     return redirect('housing-detail', pk=comment.holiday_housing.pk)
+
+@login_required
+def report_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    user = request.user
+
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.user = user
+            report.comment = comment
+            report.save()
+            return redirect('housing-detail', pk=comment.holiday_housing.pk)
+    else:
+        form = ReportForm()
+
+    return render(request, 'report_comment.html', {'form': form, 'comment': comment})
 
 
 # ich konnte leider nicht sehen ob ich schon ein upvote oder downvote gegeben habe, auf der detail Seite

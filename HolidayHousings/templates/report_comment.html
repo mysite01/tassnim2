@@ -1,0 +1,39 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block title %}
+    Report Comment
+{% endblock %}
+
+{% block content %}
+    <h2>Report Comment</h2>
+    <p>Please select a reason for reporting this comment:</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reason" id="reason1" value="Spam">
+            <label class="form-check-label" for="reason1">
+                Spam
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reason" id="reason2" value="Offensive">
+            <label class="form-check-label" for="reason2">
+                Offensive
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="reason" id="reason3" value="Inappropriate">
+            <label class="form-check-label" for="reason3">
+                Inappropriate
+            </label>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Report Comment</button>
+    </form>
+
+    <br>
+
+    <a href="{% url 'housing-list' %}">Back to Housing List</a>
+{% endblock %}

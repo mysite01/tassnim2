@@ -18,6 +18,18 @@ def get_date_20_years_ago():
 
 
 class MyUser(AbstractUser):
+    USER_TYPES = [
+        ('SU', 'superuser'),
+        ('CS', 'customer support'),
+        ('CU', 'customer user'),
+        ('QA', 'quality assurance')
+    ]
+
+    type = models.CharField(
+        max_length=2,
+        choices=USER_TYPES,
+        default='CU'
+    )
 
     date_of_birth = models.DateField(default=get_date_20_years_ago())  # default is 20 years old
 
@@ -26,6 +38,21 @@ class MyUser(AbstractUser):
     some_file = models.FileField(upload_to='uploaded_files', blank=True, null=True)
 
     gets_discount = models.BooleanField(default=False)
+
+    def has_add_permission(self):
+        return self.is_superuser or self.is_staff
+
+    def has_delete_permission(self):
+        return self.is_superuser or self.is_staff
+
+    def has_edit_permission(self):
+        return self.is_superuser or self.is_staff
+
+    def execute_after_login(self):
+        # Example implementation; customize as per your logic
+        if random.choice([True, False]):
+            self.gets_discount = True
+            self.save()
 
     def execute_after_login(self):
         user_gets_randomly_selected_for_discount = random.choice([True, False])

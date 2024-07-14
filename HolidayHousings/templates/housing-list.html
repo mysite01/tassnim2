@@ -38,7 +38,7 @@
             <ul>
                 {% for housing in all_housings %}
                     <li class="housing-item">
-                        <p>Title: {{ housing.title }}</p>
+                        <p><a href="{% url 'housing-detail' housing.id %}">Title: {{ housing.title }}</a></p>
                         <p>Type: {{ housing.get_type_display }}</p>
                         <p>Location: {{ housing.get_location_display }}</p>
                         <p>Rooms: {{ housing.rooms }}</p>
@@ -46,9 +46,19 @@
                         <p>Price: {{ housing.price }} $</p>
                         <p>Cost: {{ housing.get_costs_display }}</p>
                         <p>Maximal Quantity: {{ housing.max_quantity }}</p>
-{% if housing.image %}
-    <img src="{{ housing.image.url }}" alt="{{ housing.title }}" style="max-width: 100px; height: auto;">
-{% endif %}
+                        {% if housing.image %}
+                        <p>Image: <img src="{{ housing.image.url }}" alt="Housing Image" style="max-width: 200px;"></p>
+                        {% else %}
+                        <p>No image available</p>
+                        {% endif %}
+                        {% if housing.pdf_file %}
+                        <p>PDF: <a href="{{ housing.pdf_file.url }}" target="_blank">View PDF</a></p>
+                        {% else %}
+                        <p>No PDF available</p>
+                        {% endif %}
+                {% if housing.image %}
+                 <img src="{{ housing.image.url }}" alt="{{ housing.title }}" style="max-width: 100px; height: auto;">
+                {% endif %}
                     <p></p>
                         <form method="post" action="{% url 'add_to_cart' housing.id %}">
                             {% csrf_token %}
@@ -56,13 +66,24 @@
                             <input type="number" id="quantity" name="quantity" min="1" max="{{ housing.max_quantity }}" required>
                             <button type="submit">In den Warenkorb</button>
                         </form>
+                        {% if has_edit_permission %}
+                         <form class="housing-form" method="post" action="{% url 'housing-edit' pk=housing.pk %}">
+                        {% csrf_token %}
+                        <button type="submit">Edit</button>
+                         </form>
+                         {% endif %}
                     </li>
                 {% endfor %}
             </ul>
         {% else %}
             <p>No housings yet</p>
         {% endif %}
-
+        {% if has_add_permission %}
+        <p>Add a new holiday housing</p>
+         <form method="get" action="{% url 'housing-create' %}">
+          <button type="submit">Add new housing</button>
+         </form>
+        {% endif %}
         <!-- Error message section -->
         {% if error_message %}
             <p class="error">{{ error_message }}</p>
