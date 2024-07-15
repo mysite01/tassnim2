@@ -18,7 +18,10 @@
                 <p>🎂Happy Birthday!!🎂</p>
             {% endif %}
             <p><a href="{% url 'housing-list' %}">Show me the holiday housings</a></p>
+            {% if user.is_staff or user.type == 'CS' %}
             <p><a href="{% url 'myuser-list' %}">Show me the users</a></p>
+            <p><a href="{% url 'manage-comments' %}">Show Comments</a></p>
+            {% endif %}
             <a href="{% url 'logout' %}">Logout</a>
         {% endblock %}
 

@@ -11,6 +11,7 @@
 
 {% block logged_in_content %}
     <h2>Add a new holiday housing</h2>
+    <p><a href="{% url 'housing-list' %}">Return</a></p>
     <form method="post" action="{% url 'housing-create' %}" enctype="multipart/form-data">
 
         {% csrf_token %}
@@ -45,14 +46,9 @@
         <div>
             {{ form.pdf_file.label }}: {{ form.pdf_file }}
         </div>
-        <h3>Add an comment</h3>
-        <div>
-            {{ comment_form.text.label }}: {{ comment_form.text }}
-        </div>
-
 
         <div>
-            <button type="submit">Add housing and comment</button>
+            <button type="submit">Add housing</button>
         </div>
     </form>
 {% endblock %}

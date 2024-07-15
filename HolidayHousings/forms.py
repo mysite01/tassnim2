@@ -28,7 +28,6 @@ class HolidayHousingForm(forms.ModelForm):
             'type': forms.Select(choices=HolidayHousing.TYPE),
             'costs': forms.Select(choices=HolidayHousing.COSTS),
             'location': forms.Select(choices=HolidayHousing.LOCATION),
-            'user': forms.HiddenInput(),
             'myuser': forms.HiddenInput(),
         }
 

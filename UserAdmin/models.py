@@ -40,13 +40,13 @@ class MyUser(AbstractUser):
     gets_discount = models.BooleanField(default=False)
 
     def has_add_permission(self):
-        return self.is_superuser or self.is_staff
+        return self.is_superuser or self.is_staff or self.type == 'CS'
 
     def has_delete_permission(self):
-        return self.is_superuser or self.is_staff
+        return self.is_superuser or self.is_staff or self.type == 'CS'
 
     def has_edit_permission(self):
-        return self.is_superuser or self.is_staff
+        return self.is_superuser or self.is_staff or self.type == 'CS'
 
     def execute_after_login(self):
         # Example implementation; customize as per your logic

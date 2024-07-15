@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'UserAdmin.apps.UseradminConfig',
-    'HolidayHousings.apps.HolidayhousingsConfig'
+    'HolidayHousings.apps.HolidayhousingsConfig',
+    'CustomerService.apps.CustomerserviceConfig'
 ]
 
 MIDDLEWARE = [

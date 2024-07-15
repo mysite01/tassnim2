@@ -147,6 +147,7 @@ class Comment(models.Model):
     myuser = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     holiday_housing = models.ForeignKey(HolidayHousing, on_delete=models.CASCADE)
     star_rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=1)
+    active = models.BooleanField(default=True)
 
     def get_helpful_count(self):
         return CommentVote.objects.filter(comment=self, vote_type='U').count()

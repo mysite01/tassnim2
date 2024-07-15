@@ -85,7 +85,7 @@ def housing_detail(request, pk):
     else:
         comment_form = CommentForm()
 
-    comments = Comment.objects.filter(holiday_housing=current_single_housing)
+    comments = Comment.objects.filter(holiday_housing=current_single_housing, active=True)
 
     context = {
         'single_housing': current_single_housing,
@@ -105,8 +105,8 @@ def housing_create(request):
         comment_form = CommentForm(request.POST)
         if form.is_valid():
             housing = form.save(commit=False)
-            form.instance.myuser = request.user
-            form.save()
+            housing.myuser = request.user  # form.instance.myuser ist nicht nötig, da myuser bereits im Modell definiert ist
+            housing.save()
 
             product = Product.objects.create(
                 name=housing.title,
@@ -115,10 +115,11 @@ def housing_create(request):
                 image=None
             )
 
-            comment = comment_form.save(commit=False)
-            comment.myuser = request.user
-            comment.holiday_housing = housing
-            comment.save()
+            #comment = comment_form.save(commit=False)
+            #comment.myuser = request.user
+            #comment.holiday_housing = housing
+            #comment.save()
+            print('Formular erfolgreich gespeichert, Weiterleitung zur housing-list')
 
             return redirect('housing-list')
     else:

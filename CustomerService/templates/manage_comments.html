@@ -1,0 +1,36 @@
+
+<h2>Manage Comments</h2>
+<table>
+    <tr>
+        <th>User</th>
+        <th>Comment</th>
+        <th>Rating</th>
+        <th>Actions</th>
+    </tr>
+    {% for comment in comments %}
+    <tr>
+        <td>{{ comment.myuser.username }}</td>
+        <td>{{ comment.text }}</td>
+        <td>{{ comment.star_rating }}</td>
+        <td>
+            <form method="post" action="{% url 'delete-comment' comment.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+            {% if comment.active %}
+            <form method="post" action="{% url 'deactivate-comment' comment.id %}" style="display:inline;">
+                {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
+                    <button type="submit" class="btn btn-sm btn-success">Activate</button>
+            </form>
+            {% else %}
+            <form method="post" action="{% url 'activate-comment' comment.id %}" style="display:inline;">
+                {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
+                    <button type="submit" class="btn btn-sm btn-success">Activate</button>
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>

@@ -37,7 +37,8 @@ urlpatterns = [
    # path('home/', TemplateView.as_view(template_name='home.html'), name='home'),
     path('useradmin/', include('UserAdmin.urls')),
     path('useradmin/', include('django.contrib.auth.urls')),
-    path('housings/', include('HolidayHousings.urls'))
+    path('housings/', include('HolidayHousings.urls')),
+    path('customerservice/', include('CustomerService.urls'))
 
 ]
 

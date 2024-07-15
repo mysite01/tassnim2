@@ -34,6 +34,7 @@
 {% block content %}
     <div class="container">
         <h2>Holiday Housings</h2>
+        <p><a href="{% url 'home' %}">Return</a></p>
         {% if all_housings %}
             <ul>
                 {% for housing in all_housings %}
