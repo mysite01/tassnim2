@@ -1,86 +1,93 @@
-/* CSS in 'css/housing_list_styles.css' */
+{% extends 'home.html' %}
 
-.body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f7f7; /* Hellgrauer Hintergrund */
-    color: #333; /* Dunkelgraue Textfarbe */
-}
+{% block css %}
+    <style>
+        .housing-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+        .cart {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+            z-index: 1000;
+        }
+        .cart ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .cart-item {
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
+        }
+    </style>
+{% endblock %}
 
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff; /* Weißer Hintergrund für den Inhalt */
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+{% block content %}
+    <div class="container">
+        <h2>Holiday Housings</h2>
+        <p><a href="{% url 'home' %}">Return</a></p>
 
-h2 {
-    color: #007bff; /* Blaue Überschrift */
-    margin-bottom: 20px;
-    text-align: center;
-}
+        {% if all_housings %}
+            <ul>
+                {% for housing in all_housings %}
+                    <li class="housing-item">
+                        <p><a href="{% url 'housing-detail' housing.id %}">Title: {{ housing.title }}</a></p>
+                        <p>Type: {{ housing.get_type_display }}</p>
+                        <p>Location: {{ housing.get_location_display }}</p>
+                        <p>Rooms: {{ housing.rooms }}</p>
+                        <p>Specials: {{ housing.specials }}</p>
+                        <p>Price: {{ housing.price }} $</p>
+                        <p>Cost: {{ housing.get_costs_display }}</p>
+                        <p>Maximal Quantity: {{ housing.max_quantity }}</p>
 
-.housing-item {
-    border: 1px solid #ddd; /* Hellgrauer Rahmen */
-    background-color: #fff; /* Weißer Hintergrund */
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+                        {% if housing.image %}
+                            <p>Image: <img src="{{ housing.image.url }}" alt="Housing Image" style="max-width: 200px;"></p>
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
 
-.housing-item p {
-    margin: 5px 0;
-}
+                        {% if housing.pdf_file %}
+                            <p>PDF: <a href="{{ housing.pdf_file.url }}" target="_blank">View PDF</a></p>
+                        {% else %}
+                            <p>No PDF available</p>
+                        {% endif %}
 
-.housing-item img {
-    max-width: 100px;
-    height: auto;
-    margin-top: 10px;
-    border-radius: 3px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
+                        <form method="post" action="{% url 'add_to_cart' housing.id %}">
+                            {% csrf_token %}
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" min="1" max="{{ housing.max_quantity }}" required>
+                            <button type="submit">Add to Cart</button>
+                        </form>
 
-.housing-item form {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end; /* Formularelemente rechts ausrichten */
-}
+                        {% if has_edit_permission %}
+                            <form class="housing-form" method="post" action="{% url 'housing-edit' pk=housing.pk %}">
+                                {% csrf_token %}
+                                <button type="submit">Edit</button>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No housings yet</p>
+        {% endif %}
 
-.housing-item form label {
-    margin-right: 10px;
-    font-weight: bold;
-    color: #555; /* Dunkelgrauer Text für Labels */
-}
+        {% if has_add_permission %}
+            <p>Add a new holiday housing</p>
+            <form method="get" action="{% url 'housing-create' %}">
+                <button type="submit">Add new housing</button>
+            </form>
+        {% endif %}
 
-.housing-item form input[type="number"] {
-    width: 50px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 14px;
-}
+        <!-- Error message section -->
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+    </div>
+{% endblock %}
 
-.housing-item form button {
-    padding: 8px 15px;
-    background-color: #28a745; /* Grüne Schaltfläche */
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-.housing-item form button:hover {
-    background-color: #218838; /* Dunklere grüne Farbe bei Hover */
-}
-
-.error {
-    color: #dc3545; /* Rote Textfarbe für Fehlermeldungen */
-    font-weight: bold;
-    text-align: center;
-    margin-top: 10px;
-}
