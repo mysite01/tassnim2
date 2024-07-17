@@ -40,6 +40,15 @@
             font-size: 14px; /* Kleinere Schriftgröße für Details */
         }
 
+        .housing-item p.title {
+            font-size: 18px; /* Größere Schriftgröße für Titel */
+        }
+
+        .housing-item p.large-text {
+            font-size: 16px; /* Größere Schriftgröße für spezielle Texte */
+            font-weight: bold; /* Fetter Text für zusätzliche Betonung */
+        }
+
         .housing-item img {
             max-width: 100px;
             height: auto;
@@ -104,13 +113,13 @@
             <ul>
                 {% for housing in all_housings %}
                     <li class="housing-item">
-                        <p><a href="{% url 'housing-detail' housing.id %}">Title: {{ housing.title }}</a></p>
-                        <p>Type: {{ housing.get_type_display }}</p>
-                        <p>Location: {{ housing.get_location_display }}</p>
+                        <p class="title"><a href="{% url 'housing-detail' housing.id %}">Title: {{ housing.title }}</a></p>
+                        <p class="large-text">Type: {{ housing.get_type_display }}</p>
+                        <p class="large-text">Location: {{ housing.get_location_display }}</p>
                         <p>Rooms: {{ housing.rooms }}</p>
                         <p>Specials: {{ housing.specials }}</p>
                         <p>Price: {{ housing.price }} $</p>
-                        <p>Cost: {{ housing.get_costs_display }}</p>
+                        <p class="large-text">Cost: {{ housing.get_costs_display }}</p>
                         <p>Maximal Quantity: {{ housing.max_quantity }}</p>
 
                         {% if housing.image %}
@@ -158,4 +167,3 @@
         {% endif %}
     </div>
 {% endblock %}
-
