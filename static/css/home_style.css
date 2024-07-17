@@ -2,6 +2,7 @@ body {
     font-family: sans-serif;
     font-size: 18px;
     color: lightsalmon;
+    background-color: #e0f7fa; /* Light blue background */
 }
 
 td {

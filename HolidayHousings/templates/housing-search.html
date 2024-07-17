@@ -1,41 +1,179 @@
-{% extends 'home.html' %}
 {% load static %}
 
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/housings_styles.css' %}">
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #e0f7fa; /* Light blue background */
+        color: #333; /* Dark gray text color */
+        line-height: 1.6;
+        font-size: 16px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff; /* White background for the content */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        color: #0277bd; /* Dark blue heading color */
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 28px;
+    }
+
+    a {
+        color: #0288d1; /* Blue color for links */
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    button {
+        padding: 8px 15px;
+        background-color: #0288d1; /* Blue button */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0277bd;
+    }
+
+    .error {
+        color: #d32f2f;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .housing-item {
+        border: 1px solid #ddd; /* Light gray border */
+        background-color: #e3f2fd;
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+    .housing-item:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+    }
+
+    .housing-item p {
+        margin: 10px 0;
+        font-size: 14px; /* Smaller font size for details */
+    }
+
+    .housing-item img {
+        max-width: 150px;
+        height: auto;
+        margin-top: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .housing-item form {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Align form elements to the right */
+    }
+
+    .housing-item form label {
+        margin-right: 10px;
+        font-weight: bold;
+        color: #555; /* Dark gray text for labels */
+        font-size: 14px;
+    }
+
+    .housing-item form input[type="number"] {
+        width: 50px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .housing-item form button {
+        padding: 8px 15px;
+        background-color: #0288d1; /* Blue button */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px; /* Smaller font size for buttons */
+        transition: background-color 0.3s ease;
+    }
+
+    .housing-item form button:hover {
+        background-color: #0277bd; /* Darker blue on hover */
+    }
+
+    .error {
+        color: #d32f2f;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="{% static 'css/housings_styles.css' %}">
 {% endblock %}
 
-{% block title %}Search Holiday Housing{% endblock %}
+
 
 {% block logged_in_content %}
 
-    <h2>Search Holiday Housing</h2>
+    <div class="container">
+        <h2>Search Holiday Housing</h2>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Search</button>
-    </form>
-    <br>
-    <br>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Search</button>
+        </form>
 
-    {% if show_search_results %}
-        <b>Housings found:</b><br>
-        {% if housings_found %}
-            <ul>
-                {% for housing in housings_found %}
-                    <li>
-                        <p><b>{{ housing }}</b></p>
-                        <a href="{% url 'housing-detail' housing.id %}">
-                            Show housing
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Keine Häuser gefunden</p>
+        <br><br>
+
+        {% if show_search_results %}
+            <b>Housings found:</b><br>
+            {% if housings_found %}
+                <ul>
+                    {% for housing in housings_found %}
+                        <li class="housing-item">
+                            <p><b>{{ housing }}</b></p>
+                            <a href="{% url 'housing-detail' housing.id %}">
+                                Show housing
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Keine Häuser gefunden</p>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
 
 {% endblock %}
+
+
 

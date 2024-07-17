@@ -13,6 +13,7 @@ class MySignUpForm(UserCreationForm):
             'first_name',
             'last_name',
             'email',
+            'type',
             'date_of_birth',
             'profile_image',
             'some_file'

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+
 
 {% block content %}
     <div class="container">
@@ -8,7 +8,7 @@
                 <div class="col-md-8">
                     <ul class="list-group mb-3">
                         {% for item in cart_items %}
-                            <li class="list-group-item">
+                            <li class="list-group-item cart-item">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <h5>{{ item.housing.title }}</h5>
@@ -16,7 +16,6 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="text-right">
-
                                             <p>Price: {{ item.housing.price }} $</p>
                                             <p>Total: {{ item.item_total_price }} $</p>
                                         </div>
@@ -27,17 +26,106 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card cart-summary">
                         <div class="card-body">
                             <h5 class="card-title">Order Summary</h5>
                             <p class="card-text">Total Price: {{ total_price }} $</p>
-                            <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+                            <a href="{% url 'checkout' %}" class="btn btn-primary checkout-btn">Proceed to Checkout</a>
                         </div>
                     </div>
                 </div>
             </div>
         {% else %}
-            <p class="text-muted">Ihr Warenkorb ist leer.</p>
+            <p class="text-muted empty-cart">Ihr Warenkorb ist leer.</p>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block css %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0f7fa; /* Light blue background */
+            color: #333; /* Dark gray text color */
+            line-height: 1.6; /* Line height for better readability */
+            font-size: 16px; /* Base font size */
+            margin: 0; /* Remove default margins */
+            padding: 0; /* Remove default paddings */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff; /* White background for the content */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0277bd; /* Dark blue heading color */
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px; /* Larger heading */
+        }
+
+        .cart-item {
+            background-color: #e3f2fd; /* Lighter blue background for cart items */
+            border: 1px solid #e3f2fd; /* Light blue border */
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-item h5 {
+            color: #0277bd; /* Dark blue heading color */
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item p {
+            color: #333; /* Dark gray text color */
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .cart-item .text-right {
+            text-align: right;
+        }
+
+        .card.cart-summary {
+            margin-top: 20px;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.cart-summary .card-body {
+            padding: 20px;
+        }
+
+        .checkout-btn {
+            background-color: #0288d1; /* Blue button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px; /* Smaller font size for buttons */
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover {
+            background-color: #e3f2fd; /* Darker blue on hover */
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #333; /* Dark gray text color */
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
 {% endblock %}

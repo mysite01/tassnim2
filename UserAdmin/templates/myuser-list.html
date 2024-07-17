@@ -1,26 +1,88 @@
-{% extends 'home.html' %}
 
-{% block title %}Users list{% endblock %}
+{% block css %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0f7fa;
+            color: #333;
+            line-height: 1.6;
+            font-size: 16px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0277bd;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .user-item {
+            border: 1px solid #ddd;
+            background-color: #e3f2fd;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .user-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .user-item p {
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .user-item img {
+            max-width: 75px;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-item a {
+            color: #0288d1; /* Blue color for links */
+            text-decoration: none;
+        }
+
+        .user-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
+    <div class="container">
+        <h2>Users list</h2>
 
-    <h2>Users list</h2>
+        <ul>
+            {% for myuser in all_myusers %}
+                <li class="user-item">
+                    <p>{{ myuser.username }} {{ myuser.first_name }} {{ myuser.last_name }} ({{ myuser.date_of_birth }})</p>
 
-    <ul>
-        {% for myuser in all_myusers %}
+                    {% if myuser.profile_image %}
+                        <img src="{{ myuser.profile_image.url }}" height="75" width="75"><br>
+                    {% endif %}
 
-            <div>
-                <p>{{ myuser.username }} {{ myuser.first_name }} {{ myuser.last_name }} ({{ myuser.date_of_birth }})</p>
-                
-                {% if myuser.profile_image %}
-                    <img src="{{ myuser.profile_image.url }}" height="75" width="75"><br>
-                {% endif %}
-            
-                {% if myuser.some_file %}
-                    <a href="{{ myuser.some_file.url }}">Some uploaded file</a><br>
-                {% endif %}
-            </div>
-
-        {% endfor %}
-    </ul>
+                    {% if myuser.some_file %}
+                        <a href="{{ myuser.some_file.url }}">Some uploaded file</a><br>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

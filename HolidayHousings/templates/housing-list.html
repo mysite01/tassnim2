@@ -1,96 +1,111 @@
+
 {% block css %}
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f7f7f7; /* Hellgrauer Hintergrund */
-            color: #333; /* Dunkelgraue Textfarbe */
-            line-height: 1.6; /* Zeilenhöhe für bessere Lesbarkeit */
-            font-size: 16px; /* Grundlegende Schriftgröße */
-            margin: 0; /* Null Rand, um den Körper zu begrenzen */
-            padding: 0; /* Null Padding, um den Körper zu begrenzen */
+            background-color: #e0f7fa;
+            color: #333;
+            line-height: 1.6;
+            font-size: 16px;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
-            max-width: 800px;
-            margin: 20px auto;
+            max-width: 900px;
+            margin: 40px auto;
             padding: 20px;
-            background-color: #fff; /* Weißer Hintergrund für den Inhalt */
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
-            color: #007bff; /* Blaue Überschrift */
+            color: #0277bd;
             margin-bottom: 20px;
             text-align: center;
-            font-size: 24px; /* Größere Überschrift */
+            font-size: 28px;
+        }
+
+        a {
+            color: #0288d1; /* Blue color for links */
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         .housing-item {
-            border: 1px solid #ddd; /* Hellgrauer Rahmen */
-            background-color: #fff; /* Weißer Hintergrund */
+            border: 1px solid #ddd; /* Light gray border */
+            background-color: #e3f2fd; /* Light blue background for housing items */
             margin-bottom: 20px;
             padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .housing-item:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
         }
 
         .housing-item p {
-            margin: 10px 0; /* Größerer Abstand zwischen den Absätzen */
-            font-size: 14px; /* Kleinere Schriftgröße für Details */
+            margin: 10px 0; /* Spacing between paragraphs */
+            font-size: 14px; /* Smaller font size for details */
         }
 
         .housing-item img {
-            max-width: 100px;
+            max-width: 150px;
             height: auto;
             margin-top: 10px;
-            border-radius: 3px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
         .housing-item form {
             margin-top: 10px;
             display: flex;
             align-items: center;
-            justify-content: flex-end; /* Formularelemente rechts ausrichten */
+            justify-content: flex-end;
         }
 
         .housing-item form label {
             margin-right: 10px;
             font-weight: bold;
-            color: #555; /* Dunkelgrauer Text für Labels */
-            font-size: 14px; /* Kleinere Schriftgröße für Labels */
+            color: #555;
+            font-size: 14px;
         }
 
         .housing-item form input[type="number"] {
             width: 50px;
             padding: 8px;
             border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 14px; /* Kleinere Schriftgröße für Eingabefelder */
+            border-radius: 5px;
+            font-size: 14px; /* Smaller font size for input fields */
         }
 
         .housing-item form button {
             padding: 8px 15px;
-            background-color: #28a745; /* Grüne Schaltfläche */
+            background-color: #0288d1; /* Blue button */
             color: #fff;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 14px; /* Kleinere Schriftgröße für Schaltflächen */
+            font-size: 14px; /* Smaller font size for buttons */
             transition: background-color 0.3s ease;
         }
 
         .housing-item form button:hover {
-            background-color: #218838; /* Dunklere grüne Farbe bei Hover */
+            background-color: #0277bd;
         }
 
         .error {
-            color: #dc3545; /* Rote Textfarbe für Fehlermeldungen */
+            color: #d32f2f; /* Red text color for error messages */
             font-weight: bold;
             text-align: center;
             margin-top: 10px;
-            font-size: 14px; /* Kleinere Schriftgröße für Fehlermeldungen */
+            font-size: 14px;
         }
     </style>
 {% endblock %}
@@ -158,4 +173,3 @@
         {% endif %}
     </div>
 {% endblock %}
-

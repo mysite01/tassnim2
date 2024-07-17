@@ -1,4 +1,116 @@
-{% extends 'home.html' %}
+
+
+{% block css %}
+    <style>
+        /* Kopiere das CSS hierher oder verlinke es aus einer externen Datei */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0f7fa; /* Light blue background */
+            color: #333; /* Dark gray text color */
+            line-height: 1.6; /* Line height for better readability */
+            font-size: 16px; /* Base font size */
+            margin: 0; /* Remove default margins */
+            padding: 0; /* Remove default paddings */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff; /* White background for the content */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0277bd; /* Dark blue heading color */
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px; /* Larger heading */
+        }
+
+        a {
+            color: #0288d1; /* Blue color for links */
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .housing-item {
+            border: 1px solid #ddd; /* Light gray border */
+            background-color: #e3f2fd; /* Light blue background for housing items */
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .housing-item:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+        }
+
+        .housing-item p {
+            margin: 10px 0; /* Spacing between paragraphs */
+            font-size: 14px; /* Smaller font size for details */
+        }
+
+        .housing-item img {
+            max-width: 150px;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .housing-item form {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Align form elements to the right */
+        }
+
+        .housing-item form label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #555; /* Dark gray text for labels */
+            font-size: 14px; /* Smaller font size for labels */
+        }
+
+        .housing-item form input[type="number"] {
+            width: 50px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px; /* Smaller font size for input fields */
+        }
+
+        .housing-item form button {
+            padding: 8px 15px;
+            background-color: #0288d1; /* Blue button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px; /* Smaller font size for buttons */
+            transition: background-color 0.3s ease;
+        }
+
+        .housing-item form button:hover {
+            background-color: #0277bd; /* Darker blue on hover */
+        }
+
+        .error {
+            color: #d32f2f; /* Red text color for error messages */
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px; /* Smaller font size for error messages */
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -6,45 +118,56 @@
         <p>Hier können Sie Ihre Bestellung abschließen.</p>
 
         <!-- Warenkorbübersicht -->
-        <h3>Warenkorb</h3>
-        <ul>
-            {% for item in cart_items %}
-                <li>{{ item.quantity }} x {{ item.housing.title }} - {{ item.item_total_price }} $</li>
-            {% endfor %}
-        </ul>
-        <p>Gesamtpreis: {{ total_price }} $</p>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Warenkorb</h3>
+                <ul class="list-group">
+                    {% for item in cart_items %}
+                        <li class="list-group-item">
+                            <span class="font-weight-bold">{{ item.quantity }} x {{ item.housing.title }}</span>
+                            <span class="float-right">{{ item.item_total_price }} $</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p class="mt-3">Gesamtpreis: <span class="font-weight-bold">{{ total_price }} $</span></p>
+            </div>
+        </div>
 
         <!-- Formular für Lieferinformationen und Zahlung -->
-        <h3>Lieferinformationen</h3>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" class="form-control" required>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Lieferinformationen</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Adresse</label>
+                        <textarea id="address" name="address" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefonnummer</label>
+                        <input type="text" id="phone" name="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-Mail</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_method">Zahlungsmethode</label>
+                        <select id="payment_method" name="payment_method" class="form-control" required>
+                            <option value="credit_card">Kreditkarte</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="bank_transfer">Überweisung</option>
+                            <!-- Weitere Optionen hinzufügen -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Bestellung abschließen</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="address">Adresse</label>
-                <textarea id="address" name="address" class="form-control" rows="3" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="phone">Telefonnummer</label>
-                <input type="text" id="phone" name="phone" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="email">E-Mail</label>
-                <input type="email" id="email" name="email" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="payment_method">Zahlungsmethode</label>
-                <select id="payment_method" name="payment_method" class="form-control" required>
-                    <option value="credit_card">Kreditkarte</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="bank_transfer">Überweisung</option>
-                    <!-- Weitere Optionen hinzufügen -->
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Bestellung abschließen</button>
-        </form>
+        </div>
 
         <!-- Zurück-Button zur Liste der Ferienunterkünfte -->
         <a href="{% url 'housing-list' %}" class="btn btn-secondary mt-3">Zurück zur Ferienunterkünfte-Liste</a>

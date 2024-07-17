@@ -1,36 +1,141 @@
 
-<h2>Manage Comments</h2>
-<table>
-    <tr>
-        <th>User</th>
-        <th>Comment</th>
-        <th>Rating</th>
-        <th>Actions</th>
-    </tr>
-    {% for comment in comments %}
-    <tr>
-        <td>{{ comment.myuser.username }}</td>
-        <td>{{ comment.text }}</td>
-        <td>{{ comment.star_rating }}</td>
-        <td>
-            <form method="post" action="{% url 'delete-comment' comment.id %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-            </form>
-            {% if comment.active %}
-            <form method="post" action="{% url 'deactivate-comment' comment.id %}" style="display:inline;">
-                {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
-                    <button type="submit" class="btn btn-sm btn-success">Activate</button>
-            </form>
-            {% else %}
-            <form method="post" action="{% url 'activate-comment' comment.id %}" style="display:inline;">
-                {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
-                    <button type="submit" class="btn btn-sm btn-success">Activate</button>
-            </form>
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+
+{% block title %}
+    <title>Manage Comments</title>
+{% endblock %}
+
+{% block css %}
+    <style>
+        /* Dein bestehendes CSS hier einfügen */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0f7fa; /* Light blue background */
+            color: #333; /* Dark gray text color */
+            line-height: 1.6; /* Line height for better readability */
+            font-size: 16px; /* Base font size */
+            margin: 0; /* Remove default margins */
+            padding: 0; /* Remove default paddings */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff; /* White background for the content */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #0277bd; /* Dark blue heading color */
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px; /* Larger heading */
+        }
+
+        /* Additional specific styles for comment management */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger {
+            background-color: #d32f2f; /* Red button */
+            color: #fff;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #b71c1c; /* Darker red on hover */
+        }
+
+        .btn-warning {
+            background-color: #ffb74d; /* Orange button */
+            color: #fff;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            background-color: #f57c00; /* Darker orange on hover */
+        }
+
+        .btn-success {
+            background-color: #4caf50; /* Green button */
+            color: #fff;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #388e3c; /* Darker green on hover */
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Manage Comments</h2>
+        <table>
+            <tr>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Rating</th>
+                <th>Actions</th>
+            </tr>
+            {% for comment in comments %}
+            <tr>
+                <td>{{ comment.myuser.username }}</td>
+                <td>{{ comment.text }}</td>
+                <td>{{ comment.star_rating }}</td>
+                <td>
+                    <form method="post" action="{% url 'delete-comment' comment.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                    {% if comment.active %}
+                    <form method="post" action="{% url 'deactivate-comment' comment.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
+                    </form>
+                    <form method="post" action="{% url 'activate-comment' comment.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">Activate</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'activate-comment' comment.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
+                    </form>
+                    <form method="post" action="{% url 'deactivate-comment' comment.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">Activate</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
