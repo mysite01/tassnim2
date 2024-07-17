@@ -1,5 +1,88 @@
 {% extends 'base.html' %}
 
+{% block css %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7; /* Hellgrauer Hintergrund */
+            color: #333; /* Dunkelgraue Textfarbe */
+            line-height: 1.6; /* Zeilenhöhe für bessere Lesbarkeit */
+            font-size: 16px; /* Grundlegende Schriftgröße */
+            margin: 0; /* Null Rand, um den Körper zu begrenzen */
+            padding: 0; /* Null Padding, um den Körper zu begrenzen */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff; /* Weißer Hintergrund für den Inhalt */
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #007bff; /* Blaue Überschrift */
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px; /* Größere Überschrift */
+        }
+
+        .cart-item {
+            border: 1px solid #ddd; /* Hellgrauer Rahmen */
+            background-color: #fff; /* Weißer Hintergrund */
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cart-item p {
+            margin: 10px 0; /* Größerer Abstand zwischen den Absätzen */
+            font-size: 14px; /* Kleinere Schriftgröße für Details */
+        }
+
+        .cart-item h5 {
+            font-size: 18px; /* Größere Schriftgröße für Titel */
+            color: #007bff; /* Blaue Überschrift */
+        }
+
+        .cart-summary {
+            border: 1px solid #ddd; /* Hellgrauer Rahmen */
+            background-color: #fff; /* Weißer Hintergrund */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            padding: 8px 15px;
+            background-color: #007bff; /* Blaue Schaltfläche */
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px; /* Kleinere Schriftgröße für Schaltflächen */
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Textdekoration entfernen */
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* Dunklere blaue Farbe bei Hover */
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-muted {
+            color: #6c757d; /* Graue Farbe für leeren Warenkorb */
+        }
+    </style>
+{% endblock %}
+
+
+
 {% block content %}
     <div class="container">
         <h2>Ihr Warenkorb</h2>
@@ -8,18 +91,15 @@
                 <div class="col-md-8">
                     <ul class="list-group mb-3">
                         {% for item in cart_items %}
-                            <li class="list-group-item">
+                            <li class="cart-item">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <h5>{{ item.housing.title }}</h5>
                                         <p>Quantity: {{ item.quantity }}</p>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="text-right">
-
-                                            <p>Price: {{ item.housing.price }} $</p>
-                                            <p>Total: {{ item.item_total_price }} $</p>
-                                        </div>
+                                    <div class="col-md-4 text-right">
+                                        <p>Price: {{ item.housing.price }} $</p>
+                                        <p>Total: {{ item.item_total_price }} $</p>
                                     </div>
                                 </div>
                             </li>
@@ -27,12 +107,10 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Order Summary</h5>
-                            <p class="card-text">Total Price: {{ total_price }} $</p>
-                            <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
-                        </div>
+                    <div class="cart-summary">
+                        <h5>Order Summary</h5>
+                        <p>Total Price: {{ total_price }} $</p>
+                        <a href="{% url 'checkout' %}" class="btn-primary">Proceed to Checkout</a>
                     </div>
                 </div>
             </div>
