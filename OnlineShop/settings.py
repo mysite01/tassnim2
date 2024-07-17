@@ -24,7 +24,11 @@ SECRET_KEY = 'django-insecure-0sgusr#%8k)_mmo+e=56q%0y0mxo^z)&pcl-&#v@ldh139%1&c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://tassnim2.onrender.com', 'tassnim10.onrender.com']
+<<<<<<< HEAD
+ALLOWED_HOSTS = ['https://tassnim10.onrender.com', 'tassnim10.onrender.com']
+=======
+ALLOWED_HOSTS = ['tassnim2.onrender.com']
+>>>>>>> be427f9b78158357f2acc4c2dbf865b311740ce8
 
 # Application definition
 
