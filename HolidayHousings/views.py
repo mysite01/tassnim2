@@ -339,6 +339,6 @@ def checkout(request):
         request.session['cart'] = {}
 
         # Erstellen einer Bestellungsbestätigung oder Weiterleitung zu einer Bestätigungsseite
-        return redirect('order_confirmation')  # Anpassen zu Ihrer Bestätigungsseite
+        return redirect('housing-list')  # Anpassen zu Ihrer Bestätigungsseite
 
     return render(request, 'checkout.html', {'cart_items': cart_items, 'total_price': total_price})
